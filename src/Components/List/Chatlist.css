@@ -11,3 +11,9 @@
 {
     margin-top: 5px !important;
 }
+.ant-input-outlined
+{
+    background-color: transparent !important;
+    border : 1px solid rgba(255,255,255,0.2) !important;
+    color : white !important;
+}
