@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
 import List from './Components/List/Chatlist';
+import Chat from './Components/Chat/Chat';
 
 function App() {
   return (
     <div className="container flex">
        <List/>
-       <h1> Chat</h1>
+       <Chat/>
        <h1> Details</h1>
     </div>
   );
