@@ -1,8 +1,8 @@
 import { InfoCircleFilled,VideoCameraFilled,PhoneFilled,PictureFilled,SendOutlined } from '@ant-design/icons'
 import { Avatar, Button, Input, Space } from 'antd'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Interface } from 'readline'
-
+import moment from 'moment';
 function Chat() {
 
  interface Message {
@@ -11,9 +11,17 @@ function Chat() {
     isMine:boolean
  }
 
-
  const [messages, setMessages] = useState<Message[]>([]);
  const[msg, setMsg] = useState('');
+ 
+ 
+ 
+useEffect(() =>
+  {
+    
+  },[])
+ 
+ 
  const sendMessage = () =>
  {
    console.log(messages)
@@ -27,8 +35,10 @@ function Chat() {
     }
     
  }
+
+
   return (
-    <div className='chatContainer flex flex-col lg:w-[50%] w-[100%] border-r-[1px] border-[rgba(255,255,255,0.2)] py-2'>
+    <div className='h-full flex flex-col lg:w-[50%] w-[100%] border-r-[1px] border-[rgba(255,255,255,0.2)] py-2'>
         <div className='userInfo flex border-b-[1px] border-[rgba(255,255,255,0.2)]'>
         <Avatar size={50} src={`https://api.dicebear.com/7.x/miniavs/svg?seed=0`}/>
             <div className='flex flex-col mt-2 pb-2'>
@@ -43,9 +53,21 @@ function Chat() {
             </div>
 
         </div>
-        <div className='chatArea flex h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)]'>
-        <Avatar size={35} src={`https://api.dicebear.com/7.x/miniavs/svg?seed=6`}/>
+        <div className='overflow-y-auto chatArea flex flex-col h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)] '>
+         {  
+           messages.map((item:any) =>
+          (
+          <div className='flex flex-col mb-3 '>
+              <div className={`${item.isMine && 'ml-auto bg-blue-500'}  break-words bg-slate-800 w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}>
+                    <span>{item.msg}</span>
+              </div>
+            <span className={`text-[10px] mt-1  ${item.isMine ? 'ml-auto' : 'ml-3'} `}> {moment().fromNow(item.timestamp)} </span>
+          </div>
+           )
+          )}
+
         </div>
+        
         <div className='sendMsg flex'>
             <div className='flex p-5'>
                 <PictureFilled style={{ fontSize: '22px'}}/>
