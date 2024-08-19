@@ -13,7 +13,7 @@ function Chat() {
 
  const [messages, setMessages] = useState<Message[]>([]);
  const[msg, setMsg] = useState('');
- 
+ const chatBox:any = useRef();
  
  
 useEffect(() =>
@@ -21,10 +21,18 @@ useEffect(() =>
     
   },[])
  
+  useEffect(() =>
+  {
+    
+      if(chatBox.current)
+      {
+        chatBox.current.scrollTop = chatBox.current.scrollHeight;
+      }
+  },[messages])
  
  const sendMessage = () =>
  {
-   console.log(messages)
+   
     if(msg.length > 0 && msg != "")
     {
     const message = {msg:msg, timestamp: new Date().toISOString(),
@@ -39,6 +47,9 @@ useEffect(() =>
 
   return (
     <div className='h-full flex flex-col lg:w-[50%] w-[100%] border-r-[1px] border-[rgba(255,255,255,0.2)] py-2'>
+        
+        {/*************  User Info  *************/}
+        
         <div className='userInfo flex border-b-[1px] border-[rgba(255,255,255,0.2)]'>
         <Avatar size={50} src={`https://api.dicebear.com/7.x/miniavs/svg?seed=0`}/>
             <div className='flex flex-col mt-2 pb-2'>
@@ -53,12 +64,14 @@ useEffect(() =>
             </div>
 
         </div>
-        <div className='overflow-y-auto chatArea flex flex-col h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)] '>
+
+        {/*************  Chat Area  *************/}
+        <div ref={chatBox} className='overflow-y-auto chatArea flex flex-col h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)] '>
          {  
            messages.map((item:any) =>
           (
           <div className='flex flex-col mb-3 '>
-              <div className={`${item.isMine && 'ml-auto bg-blue-500'}  break-words bg-slate-800 w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}>
+              <div className={`${item.isMine ? 'ml-auto bg-blue-500' : 'bg-slate-800'}  break-words  w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}>
                     <span>{item.msg}</span>
               </div>
             <span className={`text-[10px] mt-1  ${item.isMine ? 'ml-auto' : 'ml-3'} `}> {moment().fromNow(item.timestamp)} </span>
@@ -68,14 +81,16 @@ useEffect(() =>
 
         </div>
         
+        {/*************  Send Message  *************/}
+
         <div className='sendMsg flex'>
             <div className='flex p-5'>
                 <PictureFilled style={{ fontSize: '22px'}}/>
             </div>
             <Space.Compact className='w-[100%] p-5'>
-      <Input onChange={(e) => setMsg(e.target.value)} value={msg} placeholder="Write a message to send" size="large"/>
-      <Button type="primary" size="large" onClick={sendMessage}><SendOutlined /></Button>
-    </Space.Compact>
+            <Input onPressEnter={sendMessage} onChange={(e) => setMsg(e.target.value)} value={msg} placeholder="Write a message to send" size="large"/>
+            <Button type="primary" size="large"  onClick={sendMessage}><SendOutlined /></Button>
+          </Space.Compact>
        </div>
     </div>
   )
