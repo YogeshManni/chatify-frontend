@@ -20,8 +20,7 @@ import { LogoComponent } from "../../App";
 import { Link } from "react-router-dom";
 import { addUsersInDb } from "../../services/api";
 import moment from "moment";
-import { getStorage, ref } from "firebase/storage";
-const storage = getStorage();
+import upload from "../../lib/upload";
 
 export default function Register(props: any) {
   const formItemLayout = {
@@ -96,21 +95,22 @@ export default function Register(props: any) {
     multiple: false,
     listType: "picture-circle",
 
-    action: `gs://chatify01.appspot.com`,
-
     data: { name: `${username}${dateTime}` },
 
-    onChange(info: any) {
+    async onChange(info: any) {
+      console.log(info);
       handleChange(info);
-      console.log("uploaded");
+
       uploadImage(info);
     },
-    beforeUpload(file) {
+    async beforeUpload(file) {
       console.log(file);
       if (!file.type.includes("image")) {
         message.error("Please upload an image only");
         return false;
       }
+      const res = await upload(file);
+      console.log(res);
       return true;
     },
   };
