@@ -20,6 +20,8 @@ import { LogoComponent } from "../../App";
 import { Link } from "react-router-dom";
 import { addUsersInDb } from "../../services/api";
 import moment from "moment";
+import { getStorage, ref } from "firebase/storage";
+const storage = getStorage();
 
 export default function Register(props: any) {
   const formItemLayout = {
@@ -64,6 +66,7 @@ export default function Register(props: any) {
   const onRegister = async (data: any) => {
     data.profilepic = imgName;
     const res = await addUsersInDb(data);
+    console.log(res);
     if (res.status == "success") {
       message.success("Account created successfully, please login now !");
     } else {
@@ -87,13 +90,13 @@ export default function Register(props: any) {
       });
     }
   }
-
+  //${process.env.REACT_APP_BASEURL}/users/uploadImage
   const uploadprops: UploadProps = {
     name: "image-file",
     multiple: false,
     listType: "picture-circle",
 
-    action: `${process.env.REACT_APP_BASEURL}/users/uploadImage`,
+    action: `gs://chatify01.appspot.com`,
 
     data: { name: `${username}${dateTime}` },
 

@@ -21,8 +21,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-label,
-span {
+Form label,
+Form span {
   color: white !important;
 }
 button {

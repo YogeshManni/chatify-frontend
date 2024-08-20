@@ -26,9 +26,11 @@ export default function Login(props: any) {
     } else if (res.status == "internal_error") {
       message.error("Some unknown error occured, please try again!!");
     } else if (res.status == "success") {
+      setLogin(false);
       setUser(res.data);
       message.success("Login succeed, getting you to homepage !");
-      navigate("/posts");
+      navigate("/home");
+      window.location.reload(); // Reload incase page doesn't get updated
     }
     setLogin(false);
   };
