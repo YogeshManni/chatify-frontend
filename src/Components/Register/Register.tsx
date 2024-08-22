@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { addUsersInDb } from "../../services/api";
 import moment from "moment";
 import upload from "../../lib/upload";
+import { randomInt } from "crypto";
 
 export default function Register(props: any) {
   const formItemLayout = {
@@ -63,7 +64,8 @@ export default function Register(props: any) {
   const handleCancel = () => setPreviewOpen(false);
 
   const onRegister = async (data: any) => {
-    data.profilepic = imgName;
+    data.profilepic = u_img;
+    console.log(data);
     const res = await addUsersInDb(data);
     console.log(res);
     if (res.status == "success") {
@@ -73,44 +75,23 @@ export default function Register(props: any) {
     }
   };
 
-  function getImage(img: any, callback: any) {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
-
-  function uploadImage(info: any) {
-    console.log(info.file);
-    console.log(dateTime);
-    if (info.file.status == "done") {
-      getImage(info.file.originFileObj, (imageUrl: any) => {
-        setImgName(`${username}${dateTime}${info.file.name}`);
-        setImage(imageUrl);
-      });
-    }
-  }
-  //${process.env.REACT_APP_BASEURL}/users/uploadImage
   const uploadprops: UploadProps = {
     name: "image-file",
     multiple: false,
     listType: "picture-circle",
 
-    data: { name: `${username}${dateTime}` },
-
-    async onChange(info: any) {
-      console.log(info);
-      handleChange(info);
-
-      uploadImage(info);
-    },
     async beforeUpload(file) {
-      console.log(file);
       if (!file.type.includes("image")) {
         message.error("Please upload an image only");
         return false;
       }
-      const res = await upload(file);
-      console.log(res);
+
+      let _username = username;
+      if (!_username)
+        _username = String(Math.floor(Math.random() * 500000) + 1);
+      const newFileName = `${_username}${dateTime}${file.name}`;
+      const imageUrl = await upload(file, newFileName);
+      setImage(String(imageUrl));
       return true;
     },
   };

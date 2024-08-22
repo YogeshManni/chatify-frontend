@@ -28,11 +28,11 @@ export const getDiscussionsFromDb = async () => {
     return res.data;
   });
 };
- 
+
 export const addDiscussionsToDb = async (data: any) => {
   return await axios
     .post(`${baseURL}/event/discussion/addDiscussions`, data)
-    .then((res:any) => {
+    .then((res: any) => {
       return res.data;
     });
 };
@@ -40,7 +40,7 @@ export const addDiscussionsToDb = async (data: any) => {
 export const addCommentTodb = async (data: any) => {
   return await axios
     .post(`${baseURL}/event/comments/addComments`, data)
-    .then((res:any) => {
+    .then((res: any) => {
       return res.data;
     });
 };
@@ -56,7 +56,7 @@ export const getCommentFromdb = async (id: any, type: any) => {
 export const updateLikesInDb = async (data: any) => {
   return await axios
     .post(`${baseURL}/event/discussion/updateLikes`, data)
-    .then((res:any) => {
+    .then((res: any) => {
       return res.data;
     });
 };
@@ -112,7 +112,21 @@ export const loginFromDb = async (data: any) => {
 export const updateDpinDb = async (data: any) => {
   return await axios
     .post(`${baseURL}/users/updateUserdata`, data)
-    .then((res:any) => {
+    .then((res: any) => {
+      return res.data;
+    });
+};
+
+export const getChatUsers = async (data: any) => {
+  return await axios.post(`${baseURL}/users/login`, data).then((res) => {
+    return res.data;
+  });
+};
+
+export const getSearchUsers = async (searchQuery: any) => {
+  return await axios
+    .post(`${baseURL}/users/searchUsers`, searchQuery)
+    .then((res) => {
       return res.data;
     });
 };

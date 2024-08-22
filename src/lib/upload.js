@@ -7,12 +7,12 @@ import {
 
 import { storage } from "./firebase";
 
-const upload = async (file) => {
+const upload = async (file, filename) => {
   // Create the file metadata
   /** @type {any} */
-  console.log(file);
+  console.log(file, filename);
   // Upload file and metadata to the object 'images/mountains.jpg'
-  const storageRef = ref(storage, "images/" + file.name);
+  const storageRef = ref(storage, "images/" + filename);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
   return new Promise((resolve, reject) => {
