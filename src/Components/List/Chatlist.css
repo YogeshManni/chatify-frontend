@@ -1,12 +1,12 @@
-.chatlist .ant-list-item-meta-title > a,
-.chatlist .ant-list-item-meta-description {
+.ant-list-item-meta-title > a,
+.ant-list-item-meta-description {
   color: white !important;
 }
-.chatlist .ant-list-item-meta-description {
+.ant-list-item-meta-description {
   font-size: 12px !important;
 }
 
-.chatlist .ant-list-item-meta-title {
+.ant-list-item-meta-title {
   margin-top: 5px !important;
 }
 .ant-input-outlined {

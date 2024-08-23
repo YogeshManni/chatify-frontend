@@ -12,7 +12,7 @@ import {
 function Chatlist() {
   const [orgUsers, setOrgUsers]: any = useState(null);
   const [users, setUsers]: any = useState(null);
-
+  const [globalUsers, setGlobalUSers]: any = useState(null);
   useEffect(() => {
     /* const _getChatUsers = async () => {
       const data = await getChatUsers(1);
@@ -23,16 +23,16 @@ function Chatlist() {
     _getChatUsers(); */
     const data = [
       {
-        name: "Tom Hidelton",
+        username: "Tom Hidelton",
       },
       {
-        name: "Jamie campbell",
+        username: "Jamie campbell",
       },
       {
-        name: "Roney Millis",
+        username: "Roney Millis",
       },
       {
-        name: "Cobie cooper",
+        username: "Cobie cooper",
       },
     ];
 
@@ -40,33 +40,48 @@ function Chatlist() {
     setUsers(data);
   }, []);
 
-  const filterUsers = async (e: any) => {
+  const filterUsers = (e: any) => {
     const searchQuery = e.target.value.toLowerCase();
     if (searchQuery === "") {
       setUsers(orgUsers);
     } else {
-      const _getUsers = await getSearchUsers({ query: searchQuery });
-      console.log(_getUsers);
       const filteredUsers = users.filter((item: any) =>
-        item.name.toLowerCase().includes(searchQuery)
+        item.username.toLowerCase().includes(searchQuery)
       );
       setUsers(filteredUsers);
     }
   };
 
+  const searchGlobalUsers = async (e: any) => {
+    const searchQuery = e.target.value.toLowerCase();
+    if (searchQuery != "") {
+      const _getUsers = await getSearchUsers({ query: searchQuery });
+      setGlobalUSers(_getUsers.data);
+    } else {
+      setGlobalUSers([]);
+    }
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  /*** On clicking addbutton from modal, add new user to current chatlist ****/
+
+  const addtoChatUser = (user: any) => {
+    const isAlreadyChatUser = orgUsers.find((item: any) => item.id === user.id);
+    if (!isAlreadyChatUser) {
+      setOrgUsers([user, ...orgUsers]);
+      setUsers([user, ...orgUsers]);
+    }
+    handleCancel();
+  };
+
   return (
     <div className="flex flex-col w-[30%] border-r-[1px] border-[rgba(255,255,255,0.2)] chatlist p-4">
       <div className="flex pb-3">
@@ -106,7 +121,7 @@ function Chatlist() {
                     src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
                   />
                 }
-                title={<a href="https://ant.design">{item.name}</a>}
+                title={<a href="https://ant.design">{item.username}</a>}
                 description="this is the last msg"
               />
             </List.Item>
@@ -114,35 +129,45 @@ function Chatlist() {
         />
       )}
 
-      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal open={isModalOpen} footer={null} onCancel={handleCancel}>
         <p className="text-[15px]  mb-5"> Add users</p>
         <div className=" search pb-5 border-b-[1px] border-[rgba(255,255,255,0.2)]">
           <Input.Search
             className=" bg-transparent text-white-500 max-w-[300px]"
             placeholder="Search user"
             allowClear
-            onChange={filterUsers}
+            onChange={searchGlobalUsers}
           />
         </div>
         <List
           className="cursor-pointer"
           itemLayout="horizontal"
-          dataSource={users}
-          renderItem={(item: any, index) => (
-            <List.Item>
-              <List.Item.Meta
-                className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)]"
-                avatar={
-                  <Avatar
-                    size={50}
-                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+          dataSource={globalUsers || [{}]}
+          renderItem={(item: any, index) =>
+            globalUsers && (
+              <div className="">
+                <List.Item>
+                  <List.Item.Meta
+                    className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)]"
+                    avatar={
+                      <Avatar
+                        size={50}
+                        src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                      />
+                    }
+                    title={<a href="https://ant.design">{item.username}</a>}
+                    description="this is the last msg"
                   />
-                }
-                title={<a href="https://ant.design">{item.name}</a>}
-                description="this is the last msg"
-              />
-            </List.Item>
-          )}
+                  <Button
+                    className="text-[25px]"
+                    onClick={() => addtoChatUser(item)}
+                  >
+                    +
+                  </Button>
+                </List.Item>
+              </div>
+            )
+          }
         />
       </Modal>
     </div>
