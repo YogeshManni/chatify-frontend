@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar, Button, Input, List, Modal } from "antd";
 import "./Chatlist.css";
 import { getUser } from "../../helpers/helper";
-import { getSearchUsers } from "../../services/api";
+import { addTodbChatlist, getSearchUsers } from "../../services/api";
 import {
   PlusCircleFilled,
   PlusOutlined,
@@ -73,11 +73,12 @@ function Chatlist() {
 
   /*** On clicking addbutton from modal, add new user to current chatlist ****/
 
-  const addtoChatUser = (user: any) => {
+  const addtoChatUser = async (user: any) => {
     const isAlreadyChatUser = orgUsers.find((item: any) => item.id === user.id);
     if (!isAlreadyChatUser) {
       setOrgUsers([user, ...orgUsers]);
       setUsers([user, ...orgUsers]);
+      await addTodbChatlist({ chatId: user.id, userId: getUser().id });
     }
     handleCancel();
   };

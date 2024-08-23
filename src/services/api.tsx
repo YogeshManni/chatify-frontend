@@ -130,3 +130,9 @@ export const getSearchUsers = async (searchQuery: any) => {
       return res.data;
     });
 };
+
+export const addTodbChatlist = async (data: any) => {
+  return await axios.post(`${baseURL}/users/addChatId`, data).then((res) => {
+    return res.data;
+  });
+};
