@@ -118,7 +118,7 @@ export const updateDpinDb = async (data: any) => {
 };
 
 export const getChatUsers = async (data: any) => {
-  return await axios.post(`${baseURL}/users/login`, data).then((res) => {
+  return await axios.post(`${baseURL}/users/chatUsers`, data).then((res) => {
     return res.data;
   });
 };

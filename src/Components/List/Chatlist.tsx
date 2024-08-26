@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Avatar, Button, Input, List, Modal } from "antd";
 import "./Chatlist.css";
 import { getUser } from "../../helpers/helper";
-import { addTodbChatlist, getSearchUsers } from "../../services/api";
+import {
+  addTodbChatlist,
+  getChatUsers,
+  getSearchUsers,
+} from "../../services/api";
 import {
   PlusCircleFilled,
   PlusOutlined,
@@ -14,30 +18,16 @@ function Chatlist() {
   const [users, setUsers]: any = useState(null);
   const [globalUsers, setGlobalUSers]: any = useState(null);
   useEffect(() => {
-    /* const _getChatUsers = async () => {
-      const data = await getChatUsers(1);
-      setOrgUsers(data);
-      setUsers(data);
+    const _getChatUsers = async () => {
+      const data = await getChatUsers({ id: getUser().id });
+      console.log(data);
+      if (data.status == "success") {
+        setOrgUsers(data.data);
+        setUsers(data.data);
+      }
     };
 
-    _getChatUsers(); */
-    const data = [
-      {
-        username: "Tom Hidelton",
-      },
-      {
-        username: "Jamie campbell",
-      },
-      {
-        username: "Roney Millis",
-      },
-      {
-        username: "Cobie cooper",
-      },
-    ];
-
-    setOrgUsers(data);
-    setUsers(data);
+    _getChatUsers();
   }, []);
 
   const filterUsers = (e: any) => {
