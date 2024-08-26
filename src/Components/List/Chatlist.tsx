@@ -13,7 +13,7 @@ import {
   PlusSquareOutlined,
 } from "@ant-design/icons";
 
-function Chatlist() {
+function Chatlist({ refreshChat }: any) {
   const [orgUsers, setOrgUsers]: any = useState(null);
   const [users, setUsers]: any = useState(null);
   const [globalUsers, setGlobalUSers]: any = useState(null);
@@ -73,6 +73,10 @@ function Chatlist() {
     handleCancel();
   };
 
+  const updateChat = (item: any) => {
+    refreshChat(item);
+  };
+
   return (
     <div className="flex flex-col w-[30%] border-r-[1px] border-[rgba(255,255,255,0.2)] chatlist p-4">
       <div className="flex pb-3">
@@ -103,7 +107,7 @@ function Chatlist() {
           itemLayout="horizontal"
           dataSource={users}
           renderItem={(item: any, index) => (
-            <List.Item>
+            <List.Item onClick={() => updateChat(item)}>
               <List.Item.Meta
                 className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)]"
                 avatar={

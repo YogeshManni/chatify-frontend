@@ -9,6 +9,7 @@ import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import { Button } from "antd";
 import { getUser, logout } from "./helpers/helper";
+import Chatlist from "./Components/List/Chatlist";
 
 export const LogoComponent = () => {
   return (
@@ -20,11 +21,16 @@ export const LogoComponent = () => {
 
 function App() {
   const [type, setType] = useState("signIn");
+  const [chatId, setChatId]: any = useState(null);
   const handleOnClick = (text: any) => {
     if (text !== type) {
       setType(text);
       return;
     }
+  };
+
+  const refreshChat = (userData: number) => {
+    setChatId(userData);
   };
 
   useEffect(() => {
@@ -101,8 +107,8 @@ function App() {
               element={
                 <div className="chatBody">
                   <div className="container flex">
-                    <List />
-                    <Chat />
+                    <Chatlist refreshChat={refreshChat} />
+                    <Chat chatId={chatId} />
                     <Details />
                   </div>
                 </div>

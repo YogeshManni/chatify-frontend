@@ -13,7 +13,7 @@ import io from "socket.io-client";
 import { getUser } from "../../helpers/helper";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
-function Chat() {
+function Chat({ chatId }: any) {
   interface Message {
     msg: string;
     timestamp: string;
@@ -51,7 +51,11 @@ function Chat() {
         timestamp: new Date().toISOString(),
         isMine: true,
       };
-      socket.emit("chat message", { from: getUser().id, to: 2, message: msg });
+      socket.emit("chat message", {
+        from: getUser().id,
+        to: chatId.id,
+        message: msg,
+      });
       setMessages([...messages, message]);
       setMsg("");
     }
