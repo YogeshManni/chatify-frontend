@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, createContext } from "react";
 import "./App.css";
 import List from "./Components/List/Chatlist";
 import Chat from "./Components/Chat/Chat";
@@ -19,9 +19,11 @@ export const LogoComponent = () => {
   );
 };
 
+const dataContext = createContext({});
 function App() {
   const [type, setType] = useState("signIn");
   const [chatId, setChatId]: any = useState(null);
+
   const handleOnClick = (text: any) => {
     if (text !== type) {
       setType(text);
@@ -107,9 +109,11 @@ function App() {
               element={
                 <div className="chatBody">
                   <div className="container flex">
-                    <Chatlist refreshChat={refreshChat} />
-                    <Chat chatId={chatId} />
-                    <Details />
+                    <dataContext.Provider value={{ refreshChat }}>
+                      <Chatlist />
+                      <Chat chatId={chatId} />
+                      <Details />
+                    </dataContext.Provider>
                   </div>
                 </div>
               }

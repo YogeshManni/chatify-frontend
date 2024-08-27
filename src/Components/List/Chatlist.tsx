@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Avatar, Button, Input, List, Modal } from "antd";
 import "./Chatlist.css";
 import { getUser } from "../../helpers/helper";
+
 import {
   addTodbChatlist,
   getChatUsers,
@@ -13,10 +14,11 @@ import {
   PlusSquareOutlined,
 } from "@ant-design/icons";
 
-function Chatlist({ refreshChat }: any) {
+function Chatlist() {
   const [orgUsers, setOrgUsers]: any = useState(null);
   const [users, setUsers]: any = useState(null);
   const [globalUsers, setGlobalUSers]: any = useState(null);
+  const { refreshChat } = useContext(dataContext);
   useEffect(() => {
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
