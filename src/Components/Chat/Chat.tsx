@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import io from "socket.io-client";
 import { getUser } from "../../helpers/helper";
+import { getChatUsers } from "../../services/api";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
 function Chat({ chatId }: any) {
@@ -22,14 +23,27 @@ function Chat({ chatId }: any) {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [msg, setMsg] = useState("");
+  const [chatUsers, setChatUsers]: any = useState(null);
   const chatBox: any = useRef();
 
   useEffect(() => {
+    const _getChatUsers = async () => {
+      const data = await getChatUsers({ id: getUser().id });
+      console.log(data);
+      if (data.status === "success") {
+        setChatUsers(data.data);
+      }
+    };
+
+    _getChatUsers();
     // Register the user with the server
     socket.emit("register", getUser().id);
 
     socket.on("chat message", (data) => {
       console.log(data);
+      const userExist = chatUsers.find((item: any) => item.id === data.id);
+      if (!userExist) {
+      }
       setMessages((prevMessages) => [...prevMessages, data.newMsg]);
     });
 
@@ -52,7 +66,7 @@ function Chat({ chatId }: any) {
         isMine: true,
       };
       socket.emit("chat message", {
-        from: getUser().id,
+        from: getUser(),
         to: chatId.id,
         message: msg,
       });
