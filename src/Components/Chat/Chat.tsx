@@ -6,12 +6,13 @@ import {
   SendOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Input, Space } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import moment from "moment";
 import io from "socket.io-client";
 import { getUser } from "../../helpers/helper";
 import { getChatUsers } from "../../services/api";
+import { dataContext } from "../../App";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
 function Chat({ chatId }: any) {
@@ -21,16 +22,18 @@ function Chat({ chatId }: any) {
     isMine: boolean;
   }
 
+  const { setChatuser }: any = useContext(dataContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [msg, setMsg] = useState("");
-  const [chatUsers, setChatUsers]: any = useState(null);
+  const [chatUsers, setChatUsers]: any = useState([]);
   const chatBox: any = useRef();
 
   useEffect(() => {
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
-      console.log(data);
+
       if (data.status === "success") {
+        console.log(data);
         setChatUsers(data.data);
       }
     };
@@ -40,10 +43,20 @@ function Chat({ chatId }: any) {
     socket.emit("register", getUser().id);
 
     socket.on("chat message", (data) => {
-      console.log(data);
-      const userExist = chatUsers.find((item: any) => item.id === data.id);
-      if (!userExist) {
-      }
+      // find if incoming chat user already exist
+      setChatUsers((currUser: any) => {
+        let userExist = null;
+        if (currUser) {
+          userExist = currUser.find((item: any) => item.id === data.from.id);
+          // if yes then add the user to list
+          if (!userExist) {
+            setChatuser(data.from);
+          }
+        }
+        return currUser;
+      });
+
+      // add messages
       setMessages((prevMessages) => [...prevMessages, data.newMsg]);
     });
 

@@ -13,12 +13,15 @@ import {
   PlusOutlined,
   PlusSquareOutlined,
 } from "@ant-design/icons";
+import { dataContext } from "../../App";
 
 function Chatlist() {
-  const [orgUsers, setOrgUsers]: any = useState(null);
-  const [users, setUsers]: any = useState(null);
+  const [orgUsers, setOrgUsers]: any = useState([]);
+  const [users, setUsers]: any = useState([]);
   const [globalUsers, setGlobalUSers]: any = useState(null);
-  const { refreshChat } = useContext(dataContext);
+  const { refreshChat, addChatUser }: any = useContext(dataContext);
+
+  /********* use effects  ************/
   useEffect(() => {
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
@@ -31,6 +34,20 @@ function Chatlist() {
 
     _getChatUsers();
   }, []);
+
+  useEffect(() => {
+    const _addUser = async () => {
+      if (addChatUser) {
+        setOrgUsers([addChatUser, ...orgUsers]);
+        setUsers([addChatUser, ...users]);
+        await addTodbChatlist({ chatId: addChatUser.id, userId: getUser().id });
+      }
+    };
+
+    _addUser();
+  }, [addChatUser]);
+
+  /*********************/
 
   const filterUsers = (e: any) => {
     const searchQuery = e.target.value.toLowerCase();
