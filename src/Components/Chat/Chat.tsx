@@ -19,7 +19,7 @@ function Chat({ chatId }: any) {
   interface Message {
     msg: string;
     timestamp: string;
-    isMine: boolean;
+    user: Number;
   }
 
   const { setChatuser }: any = useContext(dataContext);
@@ -76,12 +76,12 @@ function Chat({ chatId }: any) {
       const message = {
         msg: msg,
         timestamp: new Date().toISOString(),
-        isMine: true,
+        user: getUser().id,
       };
       socket.emit("chat message", {
         from: getUser(),
         to: chatId.id,
-        message: msg,
+        message: message,
       });
       setMessages([...messages, message]);
       setMsg("");
@@ -117,14 +117,16 @@ function Chat({ chatId }: any) {
           <div className="flex flex-col mb-3 ">
             <div
               className={`${
-                item.isMine ? "ml-auto bg-blue-500" : "bg-slate-800"
+                item.user === getUser().id
+                  ? "ml-auto bg-blue-500"
+                  : "bg-slate-800"
               }  break-words  w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}
             >
               <span>{item.msg}</span>
             </div>
             <span
               className={`text-[10px] mt-1  ${
-                item.isMine ? "ml-auto" : "ml-3"
+                item.user === getUser().id ? "ml-auto" : "ml-3"
               } `}
             >
               {" "}
