@@ -40,6 +40,7 @@ function App() {
   };
 
   const refreshChat = (userData: number) => {
+    console.log(userData);
     setChatId(userData);
   };
 

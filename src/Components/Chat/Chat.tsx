@@ -28,19 +28,19 @@ function Chat({ chatId }: any) {
   const [chatUsers, setChatUsers]: any = useState([]);
   const chatBox: any = useRef();
 
+  const _getMessages = async () => {
+    const data = await getMessages({
+      sender: chatId.id,
+      receiver: getUser().id,
+    });
+
+    console.log(data);
+    if (data.status === "success") {
+      setMessages(data.data);
+    }
+  };
+
   useEffect(() => {
-    const _getMessages = async () => {
-      const data = await getMessages({
-        sender: chatId,
-        receiver: getUser().id,
-      });
-
-      console.log(data);
-      if (data.status === "success") {
-        setMessages(data.data);
-      }
-    };
-
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
 
@@ -49,13 +49,15 @@ function Chat({ chatId }: any) {
       }
     };
 
-    _getMessages();
+    chatId && _getMessages();
+
     _getChatUsers();
     // Register the user with the server
     socket.emit("register", getUser().id);
 
     socket.on("chat message", (data) => {
       // find if incoming chat user already exist
+      console.log(data);
       setChatUsers((currUser: any) => {
         let userExist = null;
         if (currUser) {
@@ -78,12 +80,17 @@ function Chat({ chatId }: any) {
   }, []);
 
   useEffect(() => {
+    if (chatId) _getMessages();
+  }, [chatId]);
+
+  useEffect(() => {
     if (chatBox.current) {
       chatBox.current.scrollTop = chatBox.current.scrollHeight;
     }
   }, [messages]);
 
   const sendMessage = async () => {
+    console.log(chatId);
     if (msg.length > 0 && msg != "") {
       const message = {
         msg: msg,
@@ -106,7 +113,7 @@ function Chat({ chatId }: any) {
       await saveMessageToDb(msgPacket);
 
       socket.emit("chat message", {
-        from: getUser().id,
+        from: getUser(),
         to: chatId.id,
         message: message,
       });
