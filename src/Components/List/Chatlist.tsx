@@ -20,7 +20,7 @@ function Chatlist() {
   const [users, setUsers]: any = useState([]);
   const [globalUsers, setGlobalUSers]: any = useState(null);
   const { refreshChat, addChatUser }: any = useContext(dataContext);
-
+  const [selectedUser, setSelectedUser]: any = useState(null);
   /********* use effects  ************/
   useEffect(() => {
     const _getChatUsers = async () => {
@@ -93,6 +93,8 @@ function Chatlist() {
   };
 
   const updateChat = (item: any) => {
+    console.log(item.id);
+    setSelectedUser(item.id);
     refreshChat(item);
   };
 
@@ -128,7 +130,9 @@ function Chatlist() {
           renderItem={(item: any, index) => (
             <List.Item onClick={() => updateChat(item)}>
               <List.Item.Meta
-                className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)]"
+                className={`border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)] ${
+                  item.id === selectedUser && "bg-[rgba(255,255,255,0.2)]"
+                }`}
                 avatar={
                   <Avatar
                     size={50}
@@ -162,7 +166,7 @@ function Chatlist() {
               <div className="">
                 <List.Item>
                   <List.Item.Meta
-                    className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)]"
+                    className={`border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)] `}
                     avatar={
                       <Avatar
                         size={50}
