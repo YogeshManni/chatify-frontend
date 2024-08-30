@@ -136,3 +136,15 @@ export const addTodbChatlist = async (data: any) => {
     return res.data;
   });
 };
+
+export const saveMessageToDb = async (data: any) => {
+  return await axios.post(`${baseURL}/users/saveMessage`, data).then((res) => {
+    return res.data;
+  });
+};
+
+export const getMessages = async (data: any) => {
+  return await axios.post(`${baseURL}/users/getMessages`, data).then((res) => {
+    return res.data;
+  });
+};

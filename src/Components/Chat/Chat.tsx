@@ -11,7 +11,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import io from "socket.io-client";
 import { getUser } from "../../helpers/helper";
-import { getChatUsers } from "../../services/api";
+import { getChatUsers, getMessages, saveMessageToDb } from "../../services/api";
 import { dataContext } from "../../App";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
@@ -29,15 +29,27 @@ function Chat({ chatId }: any) {
   const chatBox: any = useRef();
 
   useEffect(() => {
+    const _getMessages = async () => {
+      const data = await getMessages({
+        sender: chatId,
+        receiver: getUser().id,
+      });
+
+      console.log(data);
+      if (data.status === "success") {
+        setMessages(data.data);
+      }
+    };
+
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
 
       if (data.status === "success") {
-        console.log(data);
         setChatUsers(data.data);
       }
     };
 
+    _getMessages();
     _getChatUsers();
     // Register the user with the server
     socket.emit("register", getUser().id);
@@ -56,7 +68,7 @@ function Chat({ chatId }: any) {
         return currUser;
       });
 
-      // add messages
+      // add messages to UI
       setMessages((prevMessages) => [...prevMessages, data.newMsg]);
     });
 
@@ -71,15 +83,30 @@ function Chat({ chatId }: any) {
     }
   }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (msg.length > 0 && msg != "") {
       const message = {
         msg: msg,
         timestamp: new Date().toISOString(),
         user: getUser().id,
       };
+
+      // create a msgPacket to send to DB
+      const msgPacket = {
+        sender: getUser().id,
+        receiver: chatId.id,
+        msg: message,
+        firstTime: false,
+      };
+
+      // if this is the first time sending message to user mark firstTime flag true
+      messages.length === 0 && (msgPacket.firstTime = true);
+
+      // Save message packet to DB
+      await saveMessageToDb(msgPacket);
+
       socket.emit("chat message", {
-        from: getUser(),
+        from: getUser().id,
         to: chatId.id,
         message: message,
       });
