@@ -136,7 +136,11 @@ function Chatlist() {
                 avatar={
                   <Avatar
                     size={50}
-                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                    src={
+                      item.img !== ""
+                        ? item.img
+                        : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
+                    }
                   />
                 }
                 title={<a href="https://ant.design">{item.username}</a>}
@@ -170,7 +174,11 @@ function Chatlist() {
                     avatar={
                       <Avatar
                         size={50}
-                        src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                        src={
+                          item.img !== ""
+                            ? item.img
+                            : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
+                        }
                       />
                     }
                     title={<a href="https://ant.design">{item.username}</a>}

@@ -152,27 +152,29 @@ function Chat({ chatId }: any) {
         ref={chatBox}
         className="overflow-y-auto chatArea flex flex-col h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)] "
       >
-        {messages.map((item: any) => (
-          <div className="flex flex-col mb-3 ">
-            <div
-              className={`${
-                item.user === getUser().id
-                  ? "ml-auto bg-blue-500"
-                  : "bg-slate-800"
-              }  break-words  w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}
-            >
-              <span>{item.msg}</span>
+        {messages &&
+          messages.map((item: any) => (
+            <div className="flex flex-col mb-3 ">
+              <div
+                className={`${
+                  item.user === getUser().id
+                    ? "ml-auto bg-blue-500"
+                    : "bg-slate-800"
+                }  break-words  w-fit max-w-[60%] rounded-[15px]  h-auto p-5 text-[14px] whitespace-normal`}
+              >
+                <span>{item.msg}</span>
+              </div>
+              <span
+                className={`text-[10px] mt-1  ${
+                  item.user === getUser().id ? "ml-auto" : "ml-3"
+                } `}
+              >
+                {" "}
+                {moment(item.timestamp).fromNow()} at{" "}
+                {moment(item.timestamp).format("LT")}
+              </span>
             </div>
-            <span
-              className={`text-[10px] mt-1  ${
-                item.user === getUser().id ? "ml-auto" : "ml-3"
-              } `}
-            >
-              {" "}
-              {moment().fromNow(item.timestamp)}{" "}
-            </span>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/*************  Send Message  *************/}
