@@ -14,12 +14,13 @@ import {
   PlusSquareOutlined,
 } from "@ant-design/icons";
 import { dataContext } from "../../App";
+import { Console } from "console";
 
 function Chatlist() {
   const [orgUsers, setOrgUsers]: any = useState([]);
   const [users, setUsers]: any = useState([]);
   const [globalUsers, setGlobalUSers]: any = useState(null);
-  const { refreshChat, addChatUser }: any = useContext(dataContext);
+  const { refreshChat, addChatUser, updateMsg }: any = useContext(dataContext);
   const [selectedUser, setSelectedUser]: any = useState(null);
   /********* use effects  ************/
   useEffect(() => {
@@ -47,6 +48,20 @@ function Chatlist() {
     _addUser();
   }, [addChatUser]);
 
+  /****  use effect to update last message when updateMSg is updated from chat component */
+  useEffect(() => {
+    // update msg here
+    console.log(updateMsg, users);
+    const _users = users.map((item: any) =>
+      item.id === updateMsg.id
+        ? { ...item, content: { ...item.content, msg: updateMsg.msg } }
+        : item
+    );
+
+    // set msg to render UI
+    setOrgUsers(_users);
+    setUsers(_users);
+  }, [updateMsg]);
   /*********************/
 
   const filterUsers = (e: any) => {
@@ -144,7 +159,7 @@ function Chatlist() {
                   />
                 }
                 title={<a href="https://ant.design">{item.username}</a>}
-                description="this is the last msg"
+                description={item.content.msg}
               />
             </List.Item>
           )}
@@ -182,7 +197,7 @@ function Chatlist() {
                       />
                     }
                     title={<a href="https://ant.design">{item.username}</a>}
-                    description="this is the last msg"
+                    description={item.content.msg}
                   />
                   <Button
                     className="text-[25px]"

@@ -22,7 +22,7 @@ function Chat({ chatId }: any) {
     user: Number;
   }
 
-  const { setChatuser }: any = useContext(dataContext);
+  const { setChatuser, setUpdateMsg }: any = useContext(dataContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [msg, setMsg] = useState("");
   const [chatUsers, setChatUsers]: any = useState([]);
@@ -65,6 +65,9 @@ function Chat({ chatId }: any) {
           // if yes then add the user to list
           if (!userExist) {
             setChatuser(data.from);
+          } else {
+            // update chatlist component to update last msg with setUpdateMsg context hook and send last message
+            setUpdateMsg({ id: data.from.id, msg: data.newMsg.msg });
           }
         }
         return currUser;
@@ -103,11 +106,7 @@ function Chat({ chatId }: any) {
         sender: getUser().id,
         receiver: chatId.id,
         msg: message,
-        firstTime: false,
       };
-
-      // if this is the first time sending message to user mark firstTime flag true
-      messages.length === 0 && (msgPacket.firstTime = true);
 
       // Save message packet to DB
       await saveMessageToDb(msgPacket);
@@ -117,6 +116,9 @@ function Chat({ chatId }: any) {
         to: chatId.id,
         message: message,
       });
+      // update chatlist component to update last msg with setUpdateMsg context hook and send last message
+      setUpdateMsg({ id: chatId.id, msg: message.msg });
+
       setMessages([...messages, message]);
       setMsg("");
     }

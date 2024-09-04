@@ -31,6 +31,7 @@ function App() {
   const [type, setType] = useState("signIn");
   const [chatId, setChatId]: any = useState(null);
   const [addChatUser, setChatuser]: any = useState(null);
+  const [updateMsg, setUpdateMsg]: any = useState(null);
 
   const handleOnClick = (text: any) => {
     if (text !== type) {
@@ -119,7 +120,13 @@ function App() {
                 <div className="chatBody">
                   <div className="container flex">
                     <dataContext.Provider
-                      value={{ setChatuser, refreshChat, addChatUser }}
+                      value={{
+                        setChatuser,
+                        refreshChat,
+                        addChatUser,
+                        setUpdateMsg,
+                        updateMsg
+                      }}
                     >
                       <Chatlist />
                       <Chat chatId={chatId} />
