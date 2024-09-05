@@ -26,7 +26,7 @@ function Chatlist() {
   useEffect(() => {
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
-      console.log(data);
+      //console.log(data);
       if (data.status == "success") {
         setOrgUsers(data.data);
         setUsers(data.data);
@@ -51,7 +51,7 @@ function Chatlist() {
   /****  use effect to update last message when updateMSg is updated from chat component */
   useEffect(() => {
     // update msg here
-    console.log(updateMsg, users);
+    //console.log(updateMsg, users);
     const _users = users.map((item: any) =>
       item.id === updateMsg.id
         ? { ...item, content: { ...item.content, msg: updateMsg.msg } }
@@ -108,7 +108,7 @@ function Chatlist() {
   };
 
   const updateChat = (item: any) => {
-    console.log(item.id);
+    //console.log(item.id);
     setSelectedUser(item.id);
     refreshChat(item);
   };
@@ -159,7 +159,7 @@ function Chatlist() {
                   />
                 }
                 title={<a href="https://ant.design">{item.username}</a>}
-                description={item.content.msg}
+                description={item.content && item.content.msg}
               />
             </List.Item>
           )}
@@ -197,7 +197,7 @@ function Chatlist() {
                       />
                     }
                     title={<a href="https://ant.design">{item.username}</a>}
-                    description={item.content.msg}
+                    description={item.content && item.content.msg}
                   />
                   <Button
                     className="text-[25px]"

@@ -3,7 +3,7 @@ import axios from "axios";
 const baseURL = process.env.REACT_APP_BASEURL;
 
 export const addEventToDb = async (data: any) => {
-  console.log(data);
+  //console.log(data);
   return await axios.post(`${baseURL}/event/addEvent`, data).then((res) => {
     return res;
   });
@@ -16,7 +16,7 @@ export const updateEventInDb = async (data: any) => {
 };
 
 export const getEventFromDb = async () => {
-  console.log(`${baseURL}/event/`);
+  //console.log(`${baseURL}/event/`);
   return await axios.get(`${baseURL}/event/`).then((res) => {
     return res.data;
   });
@@ -24,7 +24,7 @@ export const getEventFromDb = async () => {
 
 export const getDiscussionsFromDb = async () => {
   return await axios.get(`${baseURL}/event/discussion`).then((res) => {
-    console.log(res.data);
+    //console.log(res.data);
     return res.data;
   });
 };

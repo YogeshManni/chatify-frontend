@@ -38,7 +38,7 @@ export default function Register(props: any) {
   const [fileList, setFileList] = useState([]);
 
   const handleChange = (props: any) => {
-    console.log(props);
+    //console.log(props);
     setFileList(props.fileList);
   };
   const uploadButton = (
@@ -65,9 +65,9 @@ export default function Register(props: any) {
 
   const onRegister = async (data: any) => {
     data.profilepic = u_img;
-    console.log(data);
+    //console.log(data);
     const res = await addUsersInDb(data);
-    console.log(res);
+    //console.log(res);
     if (res.status == "success") {
       message.success("Account created successfully, please login now !");
     } else {

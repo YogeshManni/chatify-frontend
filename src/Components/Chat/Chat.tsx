@@ -34,16 +34,17 @@ function Chat({ chatId }: any) {
       receiver: getUser().id,
     });
 
-    console.log(data);
+    //console.log(data);
     if (data.status === "success") {
       setMessages(data.data);
     }
   };
 
   useEffect(() => {
+    console.log("chat.tsx loaded !!");
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
-
+      console.log(data);
       if (data.status === "success") {
         setChatUsers(data.data);
       }
@@ -57,14 +58,16 @@ function Chat({ chatId }: any) {
 
     socket.on("chat message", (data) => {
       // find if incoming chat user already exist
-      console.log(data);
+
       setChatUsers((currUser: any) => {
         let userExist = null;
+        console.log(currUser);
         if (currUser) {
           userExist = currUser.find((item: any) => item.id === data.from.id);
           // if yes then add the user to list
           if (!userExist) {
-            setChatuser(data.from);
+            setChatuser(data.from); // send user to chatlist component with usecontext hook
+            setChatUsers([data.from, ...currUser]);
           } else {
             // update chatlist component to update last msg with setUpdateMsg context hook and send last message
             setUpdateMsg({ id: data.from.id, msg: data.newMsg.msg });
@@ -82,8 +85,17 @@ function Chat({ chatId }: any) {
     };
   }, []);
 
+  const checkUserExist = () => {
+    const chatIdExist = chatUsers.find((item: any) => item.id === chatId.id);
+    if (!chatIdExist) {
+      setChatUsers([chatId, ...chatUsers]);
+    }
+  };
+
   useEffect(() => {
-    if (chatId) _getMessages();
+    if (chatId) {
+      _getMessages();
+    }
   }, [chatId]);
 
   useEffect(() => {
@@ -93,7 +105,7 @@ function Chat({ chatId }: any) {
   }, [messages]);
 
   const sendMessage = async () => {
-    console.log(chatId);
+    //console.log(chatId);
     if (msg.length > 0 && msg != "") {
       const message = {
         msg: msg,
@@ -106,11 +118,16 @@ function Chat({ chatId }: any) {
         sender: getUser().id,
         receiver: chatId.id,
         msg: message,
+        firstTime: false,
       };
+
+      // if this is the first time sending message to user mark firstTime flag true (for db)
+      messages.length === 0 && (msgPacket.firstTime = true);
 
       // Save message packet to DB
       await saveMessageToDb(msgPacket);
 
+      // Send real  time message to user through socket
       socket.emit("chat message", {
         from: getUser(),
         to: chatId.id,
@@ -118,7 +135,7 @@ function Chat({ chatId }: any) {
       });
       // update chatlist component to update last msg with setUpdateMsg context hook and send last message
       setUpdateMsg({ id: chatId.id, msg: message.msg });
-
+      checkUserExist(); // check if user exist, if not add to current user array
       setMessages([...messages, message]);
       setMsg("");
     }

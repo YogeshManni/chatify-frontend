@@ -41,12 +41,12 @@ function App() {
   };
 
   const refreshChat = (userData: number) => {
-    console.log(userData);
+    //console.log(userData);
     setChatId(userData);
   };
 
   useEffect(() => {
-    console.log("loaded");
+    //console.log("loaded");
   }, []);
 
   const containerClass =
@@ -125,7 +125,7 @@ function App() {
                         refreshChat,
                         addChatUser,
                         setUpdateMsg,
-                        updateMsg
+                        updateMsg,
                       }}
                     >
                       <Chatlist />
