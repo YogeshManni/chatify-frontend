@@ -21,6 +21,7 @@ function Chat({ chatId }: any) {
     msg: string;
     timestamp: string;
     user: Number;
+    isRead: boolean;
   }
 
   const { setChatuser, setUpdateMsg }: any = useContext(dataContext);
@@ -37,13 +38,14 @@ function Chat({ chatId }: any) {
     });
 
     console.log(data);
+    data.data.forEach((item: Message) => (item.isRead = true)); // mark all messages as read
+
     if (data.status === "success") {
       setMessages(data.data);
     }
   };
 
   useEffect(() => {
-    console.log("useffect");
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
       //console.log(data);
@@ -60,7 +62,7 @@ function Chat({ chatId }: any) {
 
     socket.on("chat message", (data) => {
       // find if incoming chat user already exist
-      console.log("emiited");
+
       setChatUsers((currUser: any) => {
         let userExist = null;
 
@@ -80,7 +82,6 @@ function Chat({ chatId }: any) {
 
       // add messages to UI
       //check if the message is for the selected user or some other
-
       if (data.from.id === newchatId.current.id) {
         setMessages((prevMessages) => [...prevMessages, data.newMsg]);
       }
@@ -101,11 +102,13 @@ function Chat({ chatId }: any) {
 
   useEffect(() => {
     if (chatId) {
+      //setting chat id to refs so it can be accessed in callbacks(sockets)
       newchatId.current = chatId;
       _getMessages();
     }
   }, [chatId]);
 
+  /******* Useffect to scroll msg to bottom whenever new msg arrives  */
   useEffect(() => {
     if (chatBox.current) {
       chatBox.current.scrollTop = chatBox.current.scrollHeight;
@@ -115,10 +118,11 @@ function Chat({ chatId }: any) {
   const sendMessage = async () => {
     //console.log(chatId);
     if (msg.length > 0 && msg != "") {
-      const message = {
+      const message: Message = {
         msg: msg,
         timestamp: new Date().toISOString(),
         user: getUser().id,
+        isRead: false,
       };
 
       // create a msgPacket to send to DB

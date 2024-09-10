@@ -26,7 +26,7 @@ function Chatlist() {
   useEffect(() => {
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
-      //console.log(data);
+      console.log(data);
       if (data.status == "success") {
         setOrgUsers(data.data);
         setUsers(data.data);
@@ -148,11 +148,14 @@ function Chatlist() {
           itemLayout="horizontal"
           dataSource={users}
           renderItem={(item: any, index) => (
-            <List.Item onClick={() => updateChat(item)}>
+            <List.Item
+              onClick={() => updateChat(item)}
+              className={` hover:bg-[rgba(255,255,255,0.2)] pb-5 ${
+                item.id === selectedUser && "bg-[rgba(255,255,255,0.2)] "
+              }`}
+            >
               <List.Item.Meta
-                className={`border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5 hover:bg-[rgba(255,255,255,0.2)] ${
-                  item.id === selectedUser && "bg-[rgba(255,255,255,0.2)]"
-                }`}
+                className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5"
                 avatar={
                   <Avatar
                     size={50}
@@ -166,6 +169,11 @@ function Chatlist() {
                 title={<label className="text-white">{item.username}</label>}
                 description={item.content && item.content.msg}
               />
+              <div>
+                {item.content && item.content.isRead && (
+                  <span className="text-[20px] text-blue-500">●</span>
+                )}
+              </div>
             </List.Item>
           )}
         />
