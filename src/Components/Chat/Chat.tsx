@@ -16,6 +16,7 @@ import { dataContext } from "../../App";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
 function Chat({ chatId }: any) {
+  // chatId contain id of the selected chat user
   interface Message {
     msg: string;
     timestamp: string;
@@ -26,6 +27,7 @@ function Chat({ chatId }: any) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [msg, setMsg] = useState("");
   const [chatUsers, setChatUsers]: any = useState([]);
+  const newchatId: any = useRef();
   const chatBox: any = useRef();
 
   const _getMessages = async () => {
@@ -34,23 +36,23 @@ function Chat({ chatId }: any) {
       receiver: getUser().id,
     });
 
-    //console.log(data);
+    console.log(data);
     if (data.status === "success") {
       setMessages(data.data);
     }
   };
 
   useEffect(() => {
-    console.log("chat.tsx loaded !!");
+    console.log("useffect");
     const _getChatUsers = async () => {
       const data = await getChatUsers({ id: getUser().id });
-      console.log(data);
+      //console.log(data);
       if (data.status === "success") {
         setChatUsers(data.data);
       }
     };
 
-    chatId && _getMessages();
+    newchatId?.current && _getMessages();
 
     _getChatUsers();
     // Register the user with the server
@@ -58,10 +60,10 @@ function Chat({ chatId }: any) {
 
     socket.on("chat message", (data) => {
       // find if incoming chat user already exist
-
+      console.log("emiited");
       setChatUsers((currUser: any) => {
         let userExist = null;
-        console.log(currUser);
+
         if (currUser) {
           userExist = currUser.find((item: any) => item.id === data.from.id);
           // if yes then add the user to list
@@ -77,12 +79,17 @@ function Chat({ chatId }: any) {
       });
 
       // add messages to UI
-      setMessages((prevMessages) => [...prevMessages, data.newMsg]);
+      //check if the message is for the selected user or some other
+
+      if (data.from.id === newchatId.current.id) {
+        setMessages((prevMessages) => [...prevMessages, data.newMsg]);
+      }
     });
 
     return () => {
       socket.off("chat message");
     };
+    //ff();
   }, []);
 
   const checkUserExist = () => {
@@ -94,6 +101,7 @@ function Chat({ chatId }: any) {
 
   useEffect(() => {
     if (chatId) {
+      newchatId.current = chatId;
       _getMessages();
     }
   }, [chatId]);
@@ -172,8 +180,8 @@ function Chat({ chatId }: any) {
         className="overflow-y-auto chatArea flex flex-col h-[85%]  p-5 border-b-[1px] border-[rgba(255,255,255,0.2)] "
       >
         {messages &&
-          messages.map((item: any) => (
-            <div className="flex flex-col mb-3 ">
+          messages.map((item: any, index: number) => (
+            <div className="flex flex-col mb-3 " key={index}>
               <div
                 className={`${
                   item.user === getUser().id

@@ -52,6 +52,7 @@ function Chatlist() {
   useEffect(() => {
     // update msg here
     //console.log(updateMsg, users);
+    if (!updateMsg) return;
     const _users = users.map((item: any) =>
       item.id === updateMsg.id
         ? { ...item, content: { ...item.content, msg: updateMsg.msg } }
@@ -118,7 +119,11 @@ function Chatlist() {
       <div className="flex pb-3">
         <Avatar
           size={50}
-          src={`https://api.dicebear.com/7.x/miniavs/svg?seed=0`}
+          src={
+            getUser().img
+              ? getUser().img
+              : `https://api.dicebear.com/7.x/miniavs/svg?seed=0`
+          }
         />
         <h2 className="mt-5">{getUser().username}</h2>
       </div>
@@ -158,7 +163,7 @@ function Chatlist() {
                     }
                   />
                 }
-                title={<a href="https://ant.design">{item.username}</a>}
+                title={<label className="text-white">{item.username}</label>}
                 description={item.content && item.content.msg}
               />
             </List.Item>
