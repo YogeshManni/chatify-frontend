@@ -11,7 +11,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import io from "socket.io-client";
 import { getUser } from "../../helpers/helper";
-import { getChatUsers, getMessages, saveMessageToDb } from "../../services/api";
+import {
+  getChatUsers,
+  getMessages,
+  saveMessageToDb,
+  updatePreviousMsg,
+} from "../../services/api";
 import { dataContext } from "../../App";
 const socket = io(`${process.env.REACT_APP_BASEURL}`);
 
@@ -31,6 +36,24 @@ function Chat({ chatId }: any) {
   const newchatId: any = useRef();
   const chatBox: any = useRef();
 
+  const saveMessage = async (message: any) => {
+    // create a msgPacket to send to DB
+    const msgPacket = {
+      sender: getUser().id,
+      receiver: chatId.id,
+      msg: message,
+      firstTime: false,
+    };
+
+    // if this is the first time sending message to user mark firstTime flag true (for db)
+    messages.length === 0 && (msgPacket.firstTime = true);
+
+    // Save message packet to DB (Update previous one or insert/update new)
+    !message.isRead
+      ? await saveMessageToDb(msgPacket)
+      : await updatePreviousMsg(msgPacket);
+  };
+
   const _getMessages = async () => {
     const data = await getMessages({
       sender: chatId.id,
@@ -38,10 +61,19 @@ function Chat({ chatId }: any) {
     });
 
     console.log(data);
-    data.data.forEach((item: Message) => (item.isRead = true)); // mark all messages as read
+    const _messages = data.data;
 
     if (data.status === "success") {
-      setMessages(data.data);
+      setMessages(_messages);
+    }
+
+    // if there is atleast one message update last message read state
+    if (_messages.length > 0 && !_messages[_messages.length - 1].isRead) {
+      // Mark the last message true as user has read the chat
+      _messages[_messages.length - 1].isRead = true;
+
+      // save the last message isRead state to db
+      await saveMessage(_messages[_messages.length - 1]);
     }
   };
 
@@ -125,19 +157,7 @@ function Chat({ chatId }: any) {
         isRead: false,
       };
 
-      // create a msgPacket to send to DB
-      const msgPacket = {
-        sender: getUser().id,
-        receiver: chatId.id,
-        msg: message,
-        firstTime: false,
-      };
-
-      // if this is the first time sending message to user mark firstTime flag true (for db)
-      messages.length === 0 && (msgPacket.firstTime = true);
-
-      // Save message packet to DB
-      await saveMessageToDb(msgPacket);
+      await saveMessage(message);
 
       // Send real  time message to user through socket
       socket.emit("chat message", {

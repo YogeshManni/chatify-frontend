@@ -148,3 +148,11 @@ export const getMessages = async (data: any) => {
     return res.data;
   });
 };
+
+export const updatePreviousMsg = async (data: any) => {
+  return await axios
+    .post(`${baseURL}/users/updateMessage`, data)
+    .then((res) => {
+      return res.data;
+    });
+};

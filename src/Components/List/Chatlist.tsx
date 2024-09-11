@@ -23,16 +23,15 @@ function Chatlist() {
   const { refreshChat, addChatUser, updateMsg }: any = useContext(dataContext);
   const [selectedUser, setSelectedUser]: any = useState(null);
   /********* use effects  ************/
+  const _getChatUsers = async () => {
+    const data = await getChatUsers({ id: getUser().id });
+    console.log(data);
+    if (data.status == "success") {
+      setOrgUsers(data.data);
+      setUsers(data.data);
+    }
+  };
   useEffect(() => {
-    const _getChatUsers = async () => {
-      const data = await getChatUsers({ id: getUser().id });
-      console.log(data);
-      if (data.status == "success") {
-        setOrgUsers(data.data);
-        setUsers(data.data);
-      }
-    };
-
     _getChatUsers();
   }, []);
 
@@ -52,16 +51,24 @@ function Chatlist() {
   useEffect(() => {
     // update msg here
     //console.log(updateMsg, users);
-    if (!updateMsg) return;
+    /*  if (!updateMsg) return;
     const _users = users.map((item: any) =>
       item.id === updateMsg.id
-        ? { ...item, content: { ...item.content, msg: updateMsg.msg } }
+        ? {
+            ...item,
+            content: {
+              ...item.content,
+              msg: updateMsg.msg,
+              isRead: selectedUser === item.id ? true : false,
+            },
+          }
         : item
     );
 
     // set msg to render UI
     setOrgUsers(_users);
-    setUsers(_users);
+    setUsers(_users); */
+    _getChatUsers();
   }, [updateMsg]);
   /*********************/
 
@@ -166,13 +173,32 @@ function Chatlist() {
                     }
                   />
                 }
-                title={<label className="text-white">{item.username}</label>}
-                description={item.content && item.content.msg}
+                title={
+                  <label
+                    className={`text-white ${
+                      item?.content?.isRead === false && "font-bold"
+                    }`}
+                  >
+                    {item.username}
+                  </label>
+                }
+                description={
+                  <span
+                    className={`${
+                      item?.content?.isRead === false && "font-bold"
+                    }`}
+                  >
+                    {item.content && item.content.msg}
+                  </span>
+                }
               />
               <div>
-                {item.content && item.content.isRead && (
-                  <span className="text-[20px] text-blue-500">●</span>
-                )}
+                {/** If an message is read make message and username bold and add a blue dot **/}
+                {item.content &&
+                  item.content.isRead === false &&
+                  item.id === item.content.user && (
+                    <span className="text-[20px] text-blue-500">●</span>
+                  )}
               </div>
             </List.Item>
           )}
