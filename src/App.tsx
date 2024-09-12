@@ -118,7 +118,7 @@ function App() {
               path="/home"
               element={
                 <div className="chatBody">
-                  <div className="container flex">
+                  <div className="container flex ">
                     <dataContext.Provider
                       value={{
                         setChatuser,
@@ -130,7 +130,7 @@ function App() {
                     >
                       <Chatlist />
                       <Chat chatId={chatId} />
-                      <Details />
+                      <Details chatId={chatId} />
                     </dataContext.Provider>
                   </div>
                 </div>

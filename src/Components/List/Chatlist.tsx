@@ -135,7 +135,7 @@ function Chatlist() {
         <Avatar
           size={50}
           src={
-            getUser().img
+            getUser().img?.includes("https://")
               ? getUser().img
               : `https://api.dicebear.com/7.x/miniavs/svg?seed=0`
           }
@@ -163,19 +163,16 @@ function Chatlist() {
           itemLayout="horizontal"
           dataSource={users}
           renderItem={(item: any, index) => (
-            <List.Item
-              onClick={() => updateChat(item)}
-              className={` hover:bg-[rgba(255,255,255,0.2)] pb-5 ${
-                item.id === selectedUser && "bg-[rgba(255,255,255,0.2)] "
-              }`}
-            >
+            <List.Item onClick={() => updateChat(item)} className="!py-1">
               <List.Item.Meta
-                className="border-b-[1px]  border-[rgba(255,255,255,0.2)] pb-5"
+                className={`border-b-[1px] hover:bg-[rgba(255,255,255,0.2)] ${
+                  item.id === selectedUser && "bg-[rgba(255,255,255,0.2)]"
+                } border-[rgba(255,255,255,0.2)] py-2 pl-2`}
                 avatar={
                   <Avatar
                     size={50}
                     src={
-                      item.img !== ""
+                      item.img?.includes("https://")
                         ? item.img
                         : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
                     }
@@ -229,7 +226,7 @@ function Chatlist() {
                       <Avatar
                         size={50}
                         src={
-                          item.img !== ""
+                          item.img?.includes("https://")
                             ? item.img
                             : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
                         }

@@ -120,7 +120,7 @@ function Chat({ chatId }: any) {
 
       // add messages to UI
       //check if the message is for the selected user or some other
-      if (data.from.id === newchatId.current.id) {
+      if (newchatId.current && data.from.id === newchatId.current.id) {
         setMessages((prevMessages) => [...prevMessages, data.newMsg]);
       }
     });
@@ -154,7 +154,7 @@ function Chat({ chatId }: any) {
   }, [messages]);
 
   const sendMessage = async () => {
-    //console.log(chatId);
+    //check if msg is not empty and a chatId is selected
     if (msg.length > 0 && msg != "") {
       const message: Message = {
         msg: msg,
@@ -186,15 +186,20 @@ function Chat({ chatId }: any) {
       <div className="userInfo flex border-b-[1px] border-[rgba(255,255,255,0.2)]">
         <>
           <Avatar
+            className="ml-5"
             size={50}
-            src={`https://api.dicebear.com/7.x/miniavs/svg?seed=0`}
+            src={
+              chatId?.img?.includes("https://")
+                ? chatId.img
+                : `https://api.dicebear.com/7.x/miniavs/svg?seed=0`
+            }
           />
-          <div className="flex flex-col mt-2 pb-2">
+          <div className=" ml-3 flex flex-col mt-2 pb-2">
             <span className="text-[15px]">
               {" "}
               {chatId ? chatId.username : "Select a user to chat"}
             </span>
-            <span className="text-[13px]">Status is here............ </span>
+            <span className="text-[13px]"> Last seen ... </span>
           </div>
           <div className="userOptions flex gap-5 ml-auto pr-5 cursor-pointer">
             <PhoneFilled style={{ fontSize: "20px" }} />
@@ -240,15 +245,21 @@ function Chat({ chatId }: any) {
         <div className="flex p-5">
           <PictureFilled style={{ fontSize: "22px" }} />
         </div>
-        <Space.Compact className="w-[100%] p-5">
+        <Space.Compact aria-disabled className="w-[100%] p-5">
           <Input
             onPressEnter={sendMessage}
             onChange={(e) => setMsg(e.target.value)}
             value={msg}
             placeholder="Write a message to send"
             size="large"
+            disabled={!chatId}
           />
-          <Button type="primary" size="large" onClick={sendMessage}>
+          <Button
+            disabled={!chatId}
+            type="primary"
+            size="large"
+            onClick={sendMessage}
+          >
             <SendOutlined />
           </Button>
         </Space.Compact>
