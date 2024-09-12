@@ -36,7 +36,7 @@ function Chat({ chatId }: any) {
   const newchatId: any = useRef();
   const chatBox: any = useRef();
 
-  const saveMessage = async (message: any) => {
+  const saveMessage = async (message: any, type: string) => {
     // create a msgPacket to send to DB
     const msgPacket = {
       sender: getUser().id,
@@ -48,10 +48,15 @@ function Chat({ chatId }: any) {
     // if this is the first time sending message to user mark firstTime flag true (for db)
     messages.length === 0 && (msgPacket.firstTime = true);
 
+    console.log(message.isRead);
     // Save message packet to DB (Update previous one or insert/update new)
-    !message.isRead
-      ? await saveMessageToDb(msgPacket)
-      : await updatePreviousMsg(msgPacket);
+    if (type === "add") {
+      await saveMessageToDb(msgPacket);
+    } else {
+      //update Message to mark Isread true
+      await updatePreviousMsg(msgPacket);
+      setUpdateMsg({ id: chatId.id, msg: message.msg });
+    }
   };
 
   const _getMessages = async () => {
@@ -69,11 +74,12 @@ function Chat({ chatId }: any) {
 
     // if there is atleast one message update last message read state
     if (_messages.length > 0 && !_messages[_messages.length - 1].isRead) {
+      console.log("hello");
       // Mark the last message true as user has read the chat
       _messages[_messages.length - 1].isRead = true;
 
       // save the last message isRead state to db
-      await saveMessage(_messages[_messages.length - 1]);
+      await saveMessage(_messages[_messages.length - 1], "update");
     }
   };
 
@@ -157,7 +163,7 @@ function Chat({ chatId }: any) {
         isRead: false,
       };
 
-      await saveMessage(message);
+      await saveMessage(message, "add");
 
       // Send real  time message to user through socket
       socket.emit("chat message", {

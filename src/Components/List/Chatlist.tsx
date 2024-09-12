@@ -68,6 +68,7 @@ function Chatlist() {
     // set msg to render UI
     setOrgUsers(_users);
     setUsers(_users); */
+    console.log("upMsg");
     _getChatUsers();
   }, [updateMsg]);
   /*********************/
@@ -121,6 +122,13 @@ function Chatlist() {
     refreshChat(item);
   };
 
+  const isRead = (item: any) => {
+    return item.content &&
+      item.content.isRead === false &&
+      item.id === item.content.user
+      ? true
+      : false;
+  };
   return (
     <div className="flex flex-col w-[30%] border-r-[1px] border-[rgba(255,255,255,0.2)] chatlist p-4">
       <div className="flex pb-3">
@@ -175,30 +183,22 @@ function Chatlist() {
                 }
                 title={
                   <label
-                    className={`text-white ${
-                      item?.content?.isRead === false && "font-bold"
-                    }`}
+                    className={`text-white ${isRead(item) && "font-bold"}`}
                   >
                     {item.username}
                   </label>
                 }
                 description={
-                  <span
-                    className={`${
-                      item?.content?.isRead === false && "font-bold"
-                    }`}
-                  >
+                  <span className={`${isRead(item) && "font-bold"}`}>
                     {item.content && item.content.msg}
                   </span>
                 }
               />
               <div>
                 {/** If an message is read make message and username bold and add a blue dot **/}
-                {item.content &&
-                  item.content.isRead === false &&
-                  item.id === item.content.user && (
-                    <span className="text-[20px] text-blue-500">●</span>
-                  )}
+                {isRead(item) && (
+                  <span className="text-[20px] text-blue-500">●</span>
+                )}
               </div>
             </List.Item>
           )}
