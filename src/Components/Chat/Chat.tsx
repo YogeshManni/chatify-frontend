@@ -6,7 +6,7 @@ import {
   SendOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Input, Space } from "antd";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import moment from "moment";
 import io from "socket.io-client";

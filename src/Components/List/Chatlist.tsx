@@ -140,7 +140,7 @@ function Chatlist() {
               : `https://api.dicebear.com/7.x/miniavs/svg?seed=0`
           }
         />
-        <h2 className="mt-5">{getUser().username}</h2>
+        <h2 className="mt-5 ml-2">{getUser().username}</h2>
       </div>
 
       <div className="flex justify-between">
@@ -194,7 +194,9 @@ function Chatlist() {
               <div>
                 {/** If an message is read make message and username bold and add a blue dot **/}
                 {isRead(item) && (
-                  <span className="text-[20px] text-blue-500">●</span>
+                  <span className="ml-[-20px] text-[20px] text-blue-500">
+                    ●
+                  </span>
                 )}
               </div>
             </List.Item>
