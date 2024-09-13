@@ -201,7 +201,13 @@ function Chat({ chatId }: any) {
               {" "}
               {chatId ? chatId.username : "Select a user to chat"}
             </span>
-            <span className="text-[13px]"> Last seen ... </span>
+            <span className="text-[13px]">
+              {" "}
+              Last seen{" "}
+              {chatId?.lastseen
+                ? moment(chatId.lastseen).fromNow()
+                : " .."}{" "}
+            </span>
           </div>
           <div className="userOptions flex gap-5 ml-auto pr-5 cursor-pointer">
             <PhoneFilled style={{ fontSize: "20px" }} />

@@ -156,3 +156,9 @@ export const updatePreviousMsg = async (data: any) => {
       return res.data;
     });
 };
+
+export const setLastSeenToDb = async (data: any) => {
+  return await axios.post(`${baseURL}/users/lastSeen`, data).then((res) => {
+    return res.data;
+  });
+};

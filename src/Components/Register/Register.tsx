@@ -102,7 +102,7 @@ export default function Register(props: any) {
   }, []);
 
   return (
-    <div className="flex flex-col lg:w-[50%] h-full p-10 justify-center  lg:ml-[50%] w-[100vw]">
+    <div className="flex flex-col lg:w-[50%] h-full p-10  sm:justify-center  lg:ml-[50%] w-[100vw]">
       <div className="shadow-2xl shadow-[#8b5cf6]/60 p-10 rounded-[15px]">
         <LogoComponent />
         <Form

@@ -16,6 +16,7 @@ import Register from "./Components/Register/Register";
 import { Button } from "antd";
 import { getUser, logout } from "./helpers/helper";
 import Chatlist from "./Components/List/Chatlist";
+import { saveMessageToDb, setLastSeenToDb } from "./services/api";
 
 export const LogoComponent = () => {
   return (
@@ -46,7 +47,15 @@ function App() {
   };
 
   useEffect(() => {
-    //console.log("loaded");
+    const setLastSeen = async () => {
+      await setLastSeenToDb({ userId: getUser().id });
+    };
+
+    window.addEventListener("beforeunload", setLastSeen);
+
+    return () => {
+      window.removeEventListener("beforeunload", setLastSeen);
+    };
   }, []);
 
   const containerClass =
