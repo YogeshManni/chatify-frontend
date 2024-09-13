@@ -18,7 +18,9 @@ import {
   updatePreviousMsg,
 } from "../../services/api";
 import { dataContext } from "../../App";
-const socket = io(`${process.env.REACT_APP_BASEURL}`);
+const socket = io(`${process.env.REACT_APP_BASEURL}`, {
+  transports: ["websocket"],
+});
 
 function Chat({ chatId }: any) {
   // chatId contain id of the selected chat user
