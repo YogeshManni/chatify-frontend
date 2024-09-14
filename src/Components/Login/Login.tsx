@@ -12,6 +12,8 @@ export default function Login(props: any) {
   const [usernameFound, setUsernameFound] = useState(true);
   const [passwordStatus, setPasswordStatus] = useState(true);
 
+  console.log(process.env.REACT_APP_BASEURL);
+  
   const onLogin = async (data: any) => {
     setLogin(true);
     const res = await loginFromDb(data);
